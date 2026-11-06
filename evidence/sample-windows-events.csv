@@ -1,0 +1,6 @@
+timestamp,event_id,event_description,username,source_ip,logon_type
+2026-11-06 09:01:12,4625,Failed logon,j.smith,203.0.113.45,3
+2026-11-06 09:01:20,4625,Failed logon,j.smith,203.0.113.45,3
+2026-11-06 09:01:29,4625,Failed logon,j.smith,203.0.113.45,3
+2026-11-06 09:02:03,4624,Successful logon,j.smith,203.0.113.45,3
+2026-11-06 09:04:11,5140,Network share accessed,j.smith,203.0.113.45,
