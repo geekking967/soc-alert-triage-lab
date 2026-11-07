@@ -1,4 +1,5 @@
 import csv
+import json
 from pathlib import Path
 from datetime import datetime, timedelta
 from collections import defaultdict
@@ -6,6 +7,7 @@ from collections import defaultdict
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 LOG_FILE = BASE_DIR / "evidence" / "sample-windows-events.csv"
+OUTPUT_FILE = BASE_DIR / "output" / "correlated-alerts.json"
 
 CORRELATION_WINDOW = timedelta(minutes=5)
 
@@ -67,14 +69,32 @@ def correlate_events(events):
             ]
 
             alerts.append({
+                "alert_id": f"SOC-AUTH-{len(alerts) + 1:03d}",
+                "alert_name": "Repeated Failed Logins Followed by Success",
+                "rule_id": "AUTH-001",
+                "severity": "Medium",
+                "status": "Requires Investigation",
                 "username": username,
                 "source_ip": source_ip,
                 "failed_attempts": len(previous_failures),
-                "successful_login": success_time,
-                "share_access": len(related_shares)
+                "successful_login": success_time.isoformat(),
+                "network_share_events": len(related_shares),
+                "assessment": (
+                    "Suspicious authentication sequence detected. "
+                    "Account compromise is not confirmed."
+                )
             })
 
     return alerts
+
+
+def save_alerts(alerts):
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as file:
+        json.dump(alerts, file, indent=4)
+
+    print(f"Alerts saved to: {OUTPUT_FILE}")
 
 
 def main():
@@ -89,16 +109,19 @@ def main():
 
     if not alerts:
         print("No correlated authentication activity detected.")
+        save_alerts(alerts)
         return
 
     for alert in alerts:
-        print("[CORRELATED ALERT] Suspicious authentication sequence")
+        print("[CORRELATED ALERT]")
+        print(f"Alert ID: {alert['alert_id']}")
         print(f"Account: {alert['username']}")
         print(f"Source IP: {alert['source_ip']}")
         print(f"Failed attempts: {alert['failed_attempts']}")
-        print(f"Successful login: {alert['successful_login']}")
-        print(f"Related share events: {alert['share_access']}")
-        print("Assessment: Requires further investigation.\n")
+        print(f"Severity: {alert['severity']}")
+        print(f"Assessment: {alert['assessment']}\n")
+
+    save_alerts(alerts)
 
 
 if __name__ == "__main__":
