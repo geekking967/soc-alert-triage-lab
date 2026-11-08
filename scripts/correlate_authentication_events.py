@@ -1,3 +1,4 @@
+
 import csv
 import json
 from pathlib import Path
@@ -10,6 +11,7 @@ LOG_FILE = BASE_DIR / "evidence" / "sample-windows-events.csv"
 OUTPUT_FILE = BASE_DIR / "output" / "correlated-alerts.json"
 
 CORRELATION_WINDOW = timedelta(minutes=5)
+FAILED_LOGON_WINDOW = timedelta(seconds=60)
 
 FAILED_LOGON = "4625"
 SUCCESSFUL_LOGON = "4624"
@@ -53,13 +55,27 @@ def correlate_events(events):
         for success in successful_events.get(key, []):
             success_time = success["parsed_time"]
 
-            previous_failures = [
+            recent_failures = [
                 failure for failure in failures
                 if timedelta(0) <= success_time - failure["parsed_time"]
                 <= CORRELATION_WINDOW
             ]
 
-            if len(previous_failures) < 3:
+            qualifying_failures = []
+
+            for first_failure in recent_failures:
+                window_start = first_failure["parsed_time"]
+
+                window_failures = [
+                    failure for failure in recent_failures
+                    if timedelta(0) <= failure["parsed_time"] - window_start
+                    <= FAILED_LOGON_WINDOW
+                ]
+
+                if len(window_failures) > len(qualifying_failures):
+                    qualifying_failures = window_failures
+
+            if len(qualifying_failures) < 3:
                 continue
 
             related_shares = [
@@ -76,7 +92,7 @@ def correlate_events(events):
                 "status": "Requires Investigation",
                 "username": username,
                 "source_ip": source_ip,
-                "failed_attempts": len(previous_failures),
+                "failed_attempts": len(qualifying_failures),
                 "successful_login": success_time.isoformat(),
                 "network_share_events": len(related_shares),
                 "assessment": (
