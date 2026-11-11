@@ -30,6 +30,16 @@ def load_events():
     return sorted(events, key=lambda event: event["parsed_time"])
 
 
+def assess_severity(failed_attempts, share_events):
+    if failed_attempts >= 10 and share_events > 0:
+        return "High", "Urgent investigation recommended"
+
+    if failed_attempts >= 5 or share_events > 0:
+        return "Medium", "Prompt investigation recommended"
+
+    return "Low", "Routine investigation recommended"
+
+
 def correlate_events(events):
     failed_events = defaultdict(list)
     successful_events = defaultdict(list)
@@ -84,11 +94,17 @@ def correlate_events(events):
                 <= CORRELATION_WINDOW
             ]
 
+            severity, priority = assess_severity(
+                len(qualifying_failures),
+                len(related_shares)
+            )
+
             alerts.append({
                 "alert_id": f"SOC-AUTH-{len(alerts) + 1:03d}",
                 "alert_name": "Repeated Failed Logins Followed by Success",
                 "rule_id": "AUTH-001",
-                "severity": "Medium",
+                "severity": severity,
+                "investigation_priority": priority,
                 "status": "Requires Investigation",
                 "username": username,
                 "source_ip": source_ip,
@@ -98,7 +114,13 @@ def correlate_events(events):
                 "assessment": (
                     "Suspicious authentication sequence detected. "
                     "Account compromise is not confirmed."
-                )
+                ),
+                "recommended_actions": [
+                    "Verify whether the successful login was legitimate.",
+                    "Review the account's recent authentication history.",
+                    "Investigate the source IP and device context.",
+                    "Review network share activity and access permissions."
+                ]
             })
 
     return alerts
@@ -135,6 +157,7 @@ def main():
         print(f"Source IP: {alert['source_ip']}")
         print(f"Failed attempts: {alert['failed_attempts']}")
         print(f"Severity: {alert['severity']}")
+        print(f"Priority: {alert['investigation_priority']}")
         print(f"Assessment: {alert['assessment']}\n")
 
     save_alerts(alerts)
