@@ -126,6 +126,14 @@ The dashboard provides visibility into:
 - Alert investigation status.
 - Recommended analyst actions.
 
+### SOC Dashboard — Overview
+
+![SOC Dashboard Screenshot - LAB1](screenshots/Screenshot%20LAB1.jpg)
+
+### SOC Dashboard — Alert Details
+
+![SOC Dashboard Screenshot - LAB2](screenshots/Screenshot%20LAB2.jpg)
+
 Generated dashboard:
 
 `output/soc-dashboard.html`
