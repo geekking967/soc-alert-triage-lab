@@ -178,7 +178,7 @@ soc-alert-triage-lab/
 ### 1. Clone the repository
 
 ```powershell
-git clone https://github.com/NkissuLumayi/soc-alert-triage-lab.git
+git clone https://github.com/geekking967/soc-alert-triage-lab.git
 ```
 
 ### 2. Open the project directory
