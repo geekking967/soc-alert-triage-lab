@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SOC Security Dashboard</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f3f5f8;
+    color: #1d2939;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #14243a;
+    color: white;
+    padding: 28px 6%;
+}
+
+header h1 {
+    margin: 0 0 8px;
+    font-size: 27px;
+}
+
+header p {
+    margin: 0;
+    color: #cbd5e1;
+}
+
+main {
+    max-width: 1150px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    margin: 30px 0 15px;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 15px;
+}
+
+.metric {
+    background: white;
+    padding: 22px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.metric span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.metric h2 {
+    margin: 10px 0 0;
+    font-size: 30px;
+}
+
+.alert-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 18px;
+}
+
+.alert-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.alert-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.severity {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.high {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.low {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.unknown {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.alert-id {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 22px 0;
+}
+
+.details span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.details strong {
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.assessment {
+    background: #f1f5f9;
+    padding: 14px;
+    border-radius: 7px;
+    line-height: 1.5;
+}
+
+.alert-card h4 {
+    margin-bottom: 8px;
+}
+
+.alert-card li {
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+.empty-state {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+footer {
+    color: #64748b;
+    text-align: center;
+    padding: 30px 15px;
+    font-size: 12px;
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 22px;
+    }
+
+    .alert-card {
+        padding: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>SOC Security Dashboard</h1>
+    <p>Authentication monitoring and alert investigation</p>
+</header>
+
+<main>
+
+    <h2 class="section-title">Security Overview</h2>
+
+    <section class="metrics">
+        <div class="metric">
+            <span>Total Alerts</span>
+            <h2>1</h2>
+        </div>
+
+        <div class="metric">
+            <span>High Severity</span>
+            <h2>0</h2>
+        </div>
+
+        <div class="metric">
+            <span>Medium Severity</span>
+            <h2>1</h2>
+        </div>
+
+        <div class="metric">
+            <span>Low Severity</span>
+            <h2>0</h2>
+        </div>
+    </section>
+
+    <h2 class="section-title">Authentication Alerts</h2>
+
+    
+        <article class="alert-card">
+            <div class="alert-header">
+                <h3>Repeated Failed Logins Followed by Success</h3>
+                <span class="severity medium">
+                    Medium
+                </span>
+            </div>
+
+            <p class="alert-id">
+                SOC-AUTH-001
+                | Rule: AUTH-001
+            </p>
+
+            <div class="details">
+                <div>
+                    <span>Account</span>
+                    <strong>j.smith</strong>
+                </div>
+                <div>
+                    <span>Source IP</span>
+                    <strong>203.0.113.45</strong>
+                </div>
+                <div>
+                    <span>Failed logins</span>
+                    <strong>3</strong>
+                </div>
+                <div>
+                    <span>Share events</span>
+                    <strong>1</strong>
+                </div>
+                <div>
+                    <span>Successful login</span>
+                    <strong>2026-11-06T09:02:03</strong>
+                </div>
+                <div>
+                    <span>Status</span>
+                    <strong>Requires Investigation</strong>
+                </div>
+            </div>
+
+            <p class="assessment">
+                Suspicious authentication sequence detected. Account compromise is not confirmed.
+            </p>
+
+            <h4>Recommended analyst actions</h4>
+            <ul><li>Verify whether the successful login was legitimate.</li><li>Review the account&#x27;s recent authentication history.</li><li>Investigate the source IP and device context.</li><li>Review network share activity and access permissions.</li></ul>
+        </article>
+        
+
+</main>
+
+<footer>
+    Generated: 2026-11-11 16:15:19 South Africa Standard Time<br>
+    SOC Alert Triage Lab | Educational simulation using synthetic evidence
+</footer>
+
+</body>
+</html>
