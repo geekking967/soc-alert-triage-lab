@@ -1,0 +1,22 @@
+[
+    {
+        "alert_id": "SOC-AUTH-001",
+        "alert_name": "Repeated Failed Logins Followed by Success",
+        "rule_id": "AUTH-001",
+        "severity": "Medium",
+        "investigation_priority": "Prompt investigation recommended",
+        "status": "Requires Investigation",
+        "username": "j.smith",
+        "source_ip": "203.0.113.45",
+        "failed_attempts": 3,
+        "successful_login": "2026-11-06T09:02:03",
+        "network_share_events": 1,
+        "assessment": "Suspicious authentication sequence detected. Account compromise is not confirmed.",
+        "recommended_actions": [
+            "Verify whether the successful login was legitimate.",
+            "Review the account's recent authentication history.",
+            "Investigate the source IP and device context.",
+            "Review network share activity and access permissions."
+        ]
+    }
+]
